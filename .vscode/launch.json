@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "AppMVC",
+            "request": "launch",
+            "mainClass": "com.upb.agripos.AppMVC",
+            "projectName": "agripos-week10"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"

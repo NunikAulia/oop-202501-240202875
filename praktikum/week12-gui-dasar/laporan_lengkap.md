@@ -1,5 +1,4 @@
 # Laporan Praktikum Minggu 12 - GUI Dasar (Basic GUI)
-
 Topik: Implementasi Graphical User Interface (GUI) Dasar menggunakan Java Swing
 
 ## Identitas
@@ -11,7 +10,6 @@ Topik: Implementasi Graphical User Interface (GUI) Dasar menggunakan Java Swing
 ---
 
 ## Tujuan
-
 Mahasiswa memahami konsep Graphical User Interface (GUI) dan dapat membuat aplikasi desktop sederhana menggunakan Java Swing dengan komponen-komponen dasar seperti JFrame, JPanel, JLabel, JTextField, JButton, dan JTextArea.
 
 ---
@@ -69,13 +67,12 @@ week12-gui-dasar/
 - Menambahkan action listeners untuk tombol-tombol
 
 ### Langkah 4: Testing
-- Compile menggunakan javac
-- Jalankan aplikasi dengan java
+- Compile dan jalankan aplikasi
 - Input data produk melalui form
 - Verifikasi output dan validasi input
 
 ### File yang Dibuat
-1. `Product.java` - Model class dengan konstruktor dan getter/setter
+1. `Product.java` - Model class
 2. `ProductFrame.java` - GUI Form dengan main method
 
 ### Commit Message
@@ -91,10 +88,8 @@ feat: add week 12 basic GUI implementation with Product form
 
 ## Kode Program
 
-### Product.java
+### Product.java (Model Class)
 ```java
-package com.upb.agripos;
-
 public class Product {
     private String id;
     private String name;
@@ -133,41 +128,17 @@ public class Product {
 }
 ```
 
-### ProductFrame.java - Komponen Utama
-```java
-public class ProductFrame extends JFrame {
-    private JLabel labelId, labelName, labelPrice, labelStock;
-    private JTextField textId, textName, textPrice, textStock;
-    private JButton buttonSave, buttonReset, buttonCancel;
-    private JTextArea textAreaOutput;
+### ProductFrame.java (GUI Form)
+Komponen utama:
+- **Title Panel**: Menampilkan judul form
+- **Input Panel**: Berisi 4 label dan 4 text field untuk input data produk
+- **Button Panel**: Tombol Simpan, Reset, dan Batal
+- **Output Panel**: Text area untuk menampilkan hasil input
 
-    public ProductFrame() {
-        setTitle("AgriPOS - Product Input Form");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 450);
-        setLocationRelativeTo(null);
-        
-        // Create panels:
-        // - Title Panel (judul form)
-        // - Input Panel (GridLayout 4x2)
-        // - Button Panel (3 tombol)
-        // - Output Panel (textarea)
-        
-        addActionListeners();
-    }
-    
-    private void saveProduct() {
-        // Validasi input dan create Product object
-    }
-    
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            ProductFrame frame = new ProductFrame();
-            frame.setVisible(true);
-        });
-    }
-}
-```
+Method penting:
+- `saveProduct()`: Validasi input dan membuat object Product baru
+- `resetForm()`: Membersihkan semua input field
+- Action listeners: Menangani event dari tombol
 
 ---
 
@@ -192,93 +163,64 @@ public class ProductFrame extends JFrame {
 ## Analisis
 
 ### Bagaimana Kode Berjalan
-
-1. **Inisialisasi JFrame**
-   - ProductFrame extends JFrame dan mengatur properti window
-   - Ukuran window 600x450 pixel
-   - Tombol close akan exit aplikasi
-
-2. **Pembuatan Panel**
-   - Menggunakan BoxLayout untuk menyusun panel vertikal
-   - Input Panel menggunakan GridLayout(4,2)
-   - Button Panel menggunakan FlowLayout
-
-3. **Event Handling**
-   - Tombol "Simpan" → validasi input → create Product → display
-   - Tombol "Reset" → clear semua field
-   - Tombol "Batal" → exit aplikasi
-
-4. **Validasi Input**
-   - Check field kosong (ID dan Nama)
-   - Parse integer untuk Price dan Stock
-   - Show error dialog jika invalid
+1. **Inisialisasi JFrame**: `ProductFrame` extends `JFrame` dan mengatur properti window
+2. **Pembuatan Panel**: Menggunakan `BoxLayout` untuk menyusun panel vertikal
+3. **Penambahan Komponen**: Setiap panel berisi komponen GUI yang diatur dengan layout manager
+4. **Event Handling**: 
+   - Klik tombol "Simpan" → validasi input → buat object Product → tampilkan di TextArea
+   - Klik tombol "Reset" → bersihkan semua field
+   - Klik tombol "Batal" → keluar aplikasi
 
 ### Perbedaan dengan Minggu Sebelumnya (Week 11 - DAO Database)
-- **Week 11**: Fokus pada persistensi data ke database
-- **Week 12**: Fokus pada antarmuka user (GUI)
-- Week 12 dapat dikombinasikan dengan Week 11 untuk sistem lengkap
+- **Week 11**: Fokus pada persistensi data ke database menggunakan DAO pattern
+- **Week 12**: Fokus pada antarmuka user melalui GUI Swing, input/output interaktif
+- Week 12 dapat dikombinasikan dengan Week 11 untuk aplikasi yang lebih lengkap
 
 ### Kendala dan Solusi
 | Kendala | Solusi |
 |---------|--------|
-| Layout tidak rapi | Gunakan layout manager yang tepat |
-| Event tidak terpicu | Register ActionListener dengan benar |
-| Validasi input | Gunakan try-catch untuk NumberFormatException |
-| Thread safety | Gunakan SwingUtilities.invokeLater() |
+| Komponen tidak teratir dengan baik | Gunakan layout manager yang tepat (GridLayout, BoxLayout) |
+| Event tidak terpicu | Pastikan ActionListener terdaftar dengan benar di button |
+| Validasi input kurang | Tambahkan try-catch untuk NumberFormatException dan pengecekan field kosong |
+| GUI terlihat sempit/lebar | Atur size window dan gunakan BoxLayout dengan strut untuk spacing |
 
 ---
 
 ## Kesimpulan
 
-Praktikum Week 12 telah berhasil mendemonstrasikan pembuatan aplikasi desktop dengan GUI Swing. Aplikasi AgriPOS - Product Input Form menunjukkan:
-
-- Penggunaan komponen Swing (JFrame, JPanel, JTextField, JButton, JTextArea)
-- Layout manager untuk mengatur komponen
-- Event handling untuk interaksi user
-- Input validation untuk data quality
-- User feedback melalui dialog boxes
-
-Dengan GUI yang baik, aplikasi menjadi lebih user-friendly dan mudah digunakan.
+Dengan menggunakan Java Swing, kami dapat membuat aplikasi desktop yang user-friendly dengan antarmuka grafis yang intuitif. Komponen-komponen Swing seperti JFrame, JPanel, JTextField, dan JButton dapat dikombinasikan untuk membuat form input yang fungsional. Event handling memungkinkan aplikasi untuk merespons aksi pengguna secara real-time. Integrasi antara GUI (Week 12) dan database (Week 11) dapat menghasilkan aplikasi desktop yang komprehensif.
 
 ---
 
 ## Quiz
 
 ### 1. Jelaskan perbedaan antara JPanel dan JFrame!
-**Jawaban:**
-- **JFrame**: Window utama, dapat berdiri sendiri, punya title bar
-- **JPanel**: Container untuk komponen, memerlukan JFrame sebagai parent
+**Jawaban:**  
+- **JFrame**: Container utama (window) yang dapat dijalankan sendiri, memiliki title bar, tombol minimize/close/maximize
+- **JPanel**: Komponen yang berfungsi sebagai container untuk menyimpan komponen lain, tidak dapat berdiri sendiri tanpa JFrame
 
 ### 2. Apa kegunaan Layout Manager dalam GUI Java?
-**Jawaban:**
-Mengatur posisi dan ukuran komponen otomatis. Contoh: GridLayout untuk grid, BoxLayout untuk linear arrangement.
+**Jawaban:**  
+Layout Manager mengatur posisi dan ukuran komponen secara otomatis sesuai dengan preferensi layout yang dipilih. Contoh: GridLayout mengatur komponen dalam grid, BoxLayout mengatur secara linear (vertikal/horizontal).
 
 ### 3. Bagaimana cara menangani event klik tombol di Swing?
-**Jawaban:**
-```java
-button.addActionListener(new ActionListener() {
-    public void actionPerformed(ActionEvent e) {
-        // Handle event
-    }
-});
-```
+**Jawaban:**  
+Gunakan interface `ActionListener` dan implementasikan method `actionPerformed(ActionEvent e)`. Daftarkan listener ke tombol menggunakan method `addActionListener()`.
 
 ### 4. Jelaskan konsep validasi input dalam form!
-**Jawaban:**
-Pengecekan data sebelum diproses:
-- isEmpty() untuk field kosong
-- try-catch untuk NumberFormatException
-- JOptionPane untuk error messages
+**Jawaban:**  
+Validasi input adalah pengecekan data sebelum diproses untuk memastikan data valid:
+- Pengecekan field kosong dengan `isEmpty()`
+- Pengecekan tipe data dengan `try-catch` untuk `NumberFormatException`
+- Tampilkan pesan error menggunakan `JOptionPane.showMessageDialog()` jika validasi gagal
 
-### 5. Apa fungsi SwingUtilities.invokeLater()?
-**Jawaban:**
-Memastikan GUI operations berjalan di Event Dispatch Thread yang aman untuk thread safety.
+### 5. Apa yang akan terjadi jika tidak menggunakan `SwingUtilities.invokeLater()`?
+**Jawaban:**  
+Tanpa `SwingUtilities.invokeLater()`, GUI komponen mungkin tidak dirender dengan sempurna karena Thread Safety. `invokeLater()` memastikan semua operasi GUI berjalan di Event Dispatch Thread yang aman.
 
 ---
 
 ## Referensi
 - Oracle Java Swing Tutorial: https://docs.oracle.com/javase/tutorial/uiswing/
 - Java AWT dan Swing: https://www.geeksforgeeks.org/java-swing/
-- Event Handling: https://www.tutorialspoint.com/swing/swing_event_handling.htm
-
-   **Jawaban:** …  )
+- Event Handling dalam Swing: https://www.tutorialspoint.com/swing/swing_event_handling.htm

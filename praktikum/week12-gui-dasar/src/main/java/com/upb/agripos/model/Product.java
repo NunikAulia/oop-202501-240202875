@@ -1,7 +1,8 @@
 package com.upb.agripos.model;
 
 /**
- * Product model class representing an agricultural product
+ * Model class untuk Product (Produk)
+ * Digunakan untuk merepresentasikan data produk dalam sistem Agri-POS
  */
 public class Product {
     private String code;
@@ -9,7 +10,9 @@ public class Product {
     private double price;
     private int stock;
 
-    // Constructor lengkap
+    /**
+     * Constructor dengan semua parameter
+     */
     public Product(String code, String name, double price, int stock) {
         this.code = code;
         this.name = name;
@@ -17,7 +20,7 @@ public class Product {
         this.stock = stock;
     }
 
-    // Getters
+    // Getter methods
     public String getCode() {
         return code;
     }
@@ -34,7 +37,7 @@ public class Product {
         return stock;
     }
 
-    // Setters (jika perlu diubah)
+    // Setter methods
     public void setName(String name) {
         this.name = name;
     }
@@ -47,28 +50,8 @@ public class Product {
         this.stock = stock;
     }
 
-    // Optional: override toString
     @Override
     public String toString() {
-        return "Product{" +
-                "code='" + code + '\'' +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", stock=" + stock +
-                '}';
-    }
-
-    // Optional: override equals dan hashCode berdasarkan code
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return code.equals(product.code);
-    }
-
-    @Override
-    public int hashCode() {
-        return code.hashCode();
+        return String.format("%s - %s (Rp %.0f) Stok: %d", code, name, price, stock);
     }
 }

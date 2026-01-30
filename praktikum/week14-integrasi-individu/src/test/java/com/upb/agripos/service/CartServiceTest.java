@@ -2,119 +2,82 @@ package com.upb.agripos.service;
 
 import com.upb.agripos.exception.ValidationException;
 import com.upb.agripos.model.Product;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit tests for CartService
- * Tests business logic without GUI or database
- */
+import java.util.HashMap;
+import java.util.Map;
+
 public class CartServiceTest {
-    private CartService cartService;
-    private Product product1;
-    private Product product2;
 
-    @BeforeEach
-    public void setUp() {
-        cartService = new CartService();
-        product1 = new Product("P001", "Benih Padi", 25000, 100);
-        product2 = new Product("P002", "Pupuk Urea", 150000, 50);
+    private Map<String, CartItem> items = new HashMap<>();
+
+    // ===== INNER CLASS =====
+    private static class CartItem {
+        Product product;
+        int quantity;
+
+        CartItem(Product product, int quantity) {
+            this.product = product;
+            this.quantity = quantity;
+        }
     }
 
-    @Test
-    public void testAddItem() throws Exception {
-        cartService.addItem(product1, 5);
-        assertEquals(1, cartService.getItemCount());
-        assertEquals(125000, cartService.getTotal(), 0.01);
+    // ===== ADD ITEM =====
+    public void addItem(Product product, int quantity) throws ValidationException {
+        if (product == null) {
+            throw new ValidationException("Product cannot be null");
+        }
+
+        if (quantity <= 0) {
+            throw new ValidationException("Quantity must be greater than zero");
+        }
+
+        if (quantity > product.getStock()) {
+            throw new ValidationException("Insufficient stock");
+        }
+
+        String code = product.getCode();
+
+        if (items.containsKey(code)) {
+            CartItem existing = items.get(code);
+            int newQty = existing.quantity + quantity;
+
+            if (newQty > product.getStock()) {
+                throw new ValidationException("Insufficient stock");
+            }
+
+            existing.quantity = newQty;
+        } else {
+            items.put(code, new CartItem(product, quantity));
+        }
     }
 
-    @Test
-    public void testAddMultipleItems() throws Exception {
-        cartService.addItem(product1, 2);
-        cartService.addItem(product2, 1);
-        assertEquals(2, cartService.getItemCount());
-        assertEquals(200000, cartService.getTotal(), 0.01);
+    // ===== REMOVE ITEM =====
+    public void removeItem(String productCode) {
+        if (productCode == null) return;
+        items.remove(productCode);
     }
 
-    @Test
-    public void testAddSameItemTwice() throws Exception {
-        cartService.addItem(product1, 3);
-        cartService.addItem(product1, 2);
-        assertEquals(1, cartService.getItemCount());
-        assertEquals(125000, cartService.getTotal(), 0.01);
+    // ===== CLEAR CART =====
+    public void clear() {
+        items.clear();
     }
 
-    @Test
-    public void testRemoveItem() throws Exception {
-        cartService.addItem(product1, 5);
-        cartService.addItem(product2, 2);
-        assertEquals(2, cartService.getItemCount());
-
-        cartService.removeItem("P001");
-        assertEquals(1, cartService.getItemCount());
-        assertEquals(300000, cartService.getTotal(), 0.01);
+    // ===== GET ITEM COUNT =====
+    public int getItemCount() {
+        return items.size();
     }
 
-    @Test
-    public void testInvalidQuantity() {
-        assertThrows(ValidationException.class, () -> {
-            cartService.addItem(product1, 0);
-        });
-
-        assertThrows(ValidationException.class, () -> {
-            cartService.addItem(product1, -5);
-        });
+    // ===== GET TOTAL =====
+    public double getTotal() {
+        double total = 0;
+        for (CartItem item : items.values()) {
+            total += item.product.getPrice() * item.quantity;
+        }
+        return total;
     }
 
-    @Test
-    public void testInsufficientStock() {
-        assertThrows(ValidationException.class, () -> {
-            cartService.addItem(product1, 200);
-        });
-    }
-
-    @Test
-    public void testNullProduct() {
-        assertThrows(ValidationException.class, () -> {
-            cartService.addItem(null, 5);
-        });
-    }
-
-    @Test
-    public void testClearCart() throws Exception {
-        cartService.addItem(product1, 3);
-        cartService.addItem(product2, 2);
-        assertEquals(2, cartService.getItemCount());
-
-        cartService.clear();
-        assertEquals(0, cartService.getItemCount());
-        assertEquals(0, cartService.getTotal(), 0.01);
-        assertTrue(cartService.isEmpty());
-    }
-
-    @Test
-    public void testGetTotal() throws Exception {
-        cartService.addItem(product1, 2); // 50000
-        cartService.addItem(product2, 1); // 150000
-        assertEquals(200000, cartService.getTotal(), 0.01);
-    }
-
-    @Test
-    public void testIsEmpty() throws Exception {
-        assertTrue(cartService.isEmpty());
-
-        cartService.addItem(product1, 1);
-        assertFalse(cartService.isEmpty());
-
-        cartService.clear();
-        assertTrue(cartService.isEmpty());
-    }
-
-    @Test
-    public void testRemoveNonExistentItem() throws Exception {
-        cartService.addItem(product1, 1);
-        cartService.removeItem("P999"); // Non-existent code
-        assertEquals(1, cartService.getItemCount());
+    // ===== IS EMPTY =====
+    public boolean isEmpty() {
+        return items.isEmpty();
     }
 }

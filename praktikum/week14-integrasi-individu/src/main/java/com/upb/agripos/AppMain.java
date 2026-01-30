@@ -23,7 +23,7 @@ public class AppMain {
 
     public static void main(String[] args) {
         // Display identity
-        System.out.println("Hello World, I am [Nama]-[NIM]");
+        System.out.println("Hello World, I am [Nunik Aulia Primadani]-[240202875]");
         System.out.println("=== Agri-POS Application Started ===");
         System.out.println("Week 14 - Individual Integration (OOP + Database + GUI)");
         System.out.println("=====================================\n");

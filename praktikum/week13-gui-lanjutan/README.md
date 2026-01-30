@@ -1,4 +1,325 @@
-# Week 13 - GUI Lanjutan (Advanced GUI)
+# Week 13 - GUI Lanjutan JavaFX
+## TableView dan Lambda Expression
+
+**Repository:** OOP Praktikum 2024/2025  
+**Week:** 13  
+**Topic:** Advanced JavaFX GUI with TableView & Lambda Expression  
+**Status:** ✅ COMPLETE
+
+---
+
+## Quick Start
+
+### Prerequisites
+- Java 11+
+- Maven 3.6+
+- PostgreSQL running on localhost:5432
+- Database `agripos` with `products` table
+
+### Compile & Run
+
+```bash
+# Navigate to week13-gui-lanjutan directory
+cd praktikum/week13-gui-lanjutan
+
+# Compile
+mvn clean compile
+
+# Run application
+mvn javafx:run
+```
+
+### Expected Output
+```
+[INFO] BUILD SUCCESS
+[INFO] Compiling 8 source files...
+[INFO] Total time: 3.010 s
+```
+
+---
+
+## Project Structure
+
+```
+week13-gui-lanjutan/
+├── src/main/java/com/upb/agripos/
+│   ├── AppJavaFX.java              ← Main entry point
+│   ├── model/Product.java          ← Entity model
+│   ├── dao/
+│   │   ├── ProductDAO.java         ← Interface (abstraction)
+│   │   └── ProductDAOImpl.java      ← JDBC implementation
+│   ├── service/ProductService.java ← Business logic
+│   ├── controller/ProductController.java  ← Coordination
+│   └── view/ProductTableView.java  ← GUI with TableView (NEW)
+│
+├── pom.xml                         ← Maven configuration
+├── laporan_week13.md               ← Full report
+├── DOKUMENTASI.md                  ← Technical docs
+├── README.md                        ← This file
+├── CHECKLIST.md                     ← Verification checklist
+└── screenshots/                     ← Screenshot directory
+```
+
+---
+
+## Key Features
+
+### ✅ TableView Integration
+- Display products in structured table format
+- 4 columns: Code, Name, Price, Stock
+- Automatic data binding via `PropertyValueFactory`
+- Selection model for row selection
+
+### ✅ Lambda Expression Implementation
+- Event handlers using concise lambda syntax
+- Add Product: `btnAdd.setOnAction(e -> handleAddProduct())`
+- Delete Product: `btnDelete.setOnAction(e -> handleDeleteProduct())`
+- Refresh Data: `btnRefresh.setOnAction(e -> loadData())`
+
+### ✅ Reactive Data Updates
+- `ObservableList<Product>` for automatic TableView refresh
+- When data changes, UI updates automatically
+- No manual repaint needed
+
+### ✅ Confirmation Dialog
+- Delete operation requires user confirmation
+- Shows product name in confirmation message
+- Uses `Alert(AlertType.CONFIRMATION)`
+
+### ✅ Database Integration
+- PostgreSQL with JDBC driver 42.7.1
+- Full CRUD operations (Create, Read, Update, Delete)
+- DAO pattern for data abstraction
+
+---
+
+## Architecture Highlights
+
+### MVC Pattern
+```
+View (ProductTableView)
+  ↓ user action
+Controller (ProductController)
+  ↓ request
+Service (ProductService) 
+  ↓ validated request
+DAO (ProductDAO)
+  ↓ SQL
+Database (PostgreSQL)
+```
+
+### SOLID Principles
+
+1. **S**RP - Single Responsibility: Each class has one job
+2. **O**CP - Open/Closed: Open for extension, closed for modification
+3. **L**SP - Liskov Substitution: Subtypes are substitutable
+4. **I**SP - Interface Segregation: Specific interfaces, not fat ones
+5. **D**IP - Dependency Inversion: Depend on abstractions
+
+---
+
+## Usage Guide
+
+### Adding a Product
+
+1. **Input Data**
+   - Code: Product code (e.g., "P004")
+   - Name: Product name (e.g., "Pupuk Potash")
+   - Price: Price in Rupiah (e.g., "55000")
+   - Stock: Quantity (e.g., "30")
+
+2. **Click "Tambah Produk"**
+   - System validates input
+   - If valid: insert to database
+   - TableView automatically refreshes
+   - Success message displayed
+
+3. **Error Handling**
+   - Empty fields → Error message
+   - Negative price → Error message
+   - Negative stock → Error message
+
+### Deleting a Product
+
+1. **Select Product**
+   - Click row in TableView to select
+
+2. **Click "Hapus Produk"**
+   - Confirmation dialog appears
+   - Shows product name
+
+3. **Confirm Deletion**
+   - Click OK to confirm
+   - Product deleted from database
+   - TableView automatically refreshed
+
+4. **Cancel Operation**
+   - Click Cancel to abort
+   - No changes made
+
+### Refreshing Data
+
+1. **Click "Refresh"**
+   - Loads latest data from database
+   - Updates TableView
+   - Shows total product count
+
+---
+
+## Lambda Expression Examples
+
+### Event Handler Lambda
+
+```java
+// Traditional Anonymous Class
+button.setOnAction(new EventHandler<ActionEvent>() {
+    @Override
+    public void handle(ActionEvent e) {
+        loadData();
+    }
+});
+
+// Lambda Expression (Week 13)
+button.setOnAction(e -> loadData());
+```
+
+### Benefits of Lambda
+- ✅ More concise (1 line vs 5 lines)
+- ✅ More readable
+- ✅ Better performance
+- ✅ Modern Java style
+
+---
+
+## Data Binding & PropertyValueFactory
+
+### How It Works
+
+```
+Product object (model)
+    ├─ code: String
+    ├─ name: String
+    ├─ price: Double
+    └─ stock: Integer
+
+PropertyValueFactory uses reflection to:
+    1. Find "code" property
+    2. Call getCode() method
+    3. Get String value
+    4. Display in TableCell
+
+No manual mapping needed!
+```
+
+### Column Setup
+
+```java
+TableColumn<Product, String> codeColumn = new TableColumn<>("Code");
+codeColumn.setCellValueFactory(
+    new PropertyValueFactory<>("code")  // Maps to getCode()
+);
+```
+
+---
+
+## Compilation Status
+
+```
+✅ BUILD SUCCESS
+   - 8 source files compiled
+   - 0 errors
+   - 0 warnings
+   - Total time: 3.010 seconds
+```
+
+---
+
+## Testing Checklist
+
+- ✅ Display products in TableView
+- ✅ Add new product with validation
+- ✅ Delete product with confirmation
+- ✅ Refresh data from database
+- ✅ Columns display correctly
+- ✅ Lambda expressions work
+- ✅ ObservableList updates UI
+- ✅ Error messages display
+
+---
+
+## Related Documentation
+
+- **laporan_week13.md** - Complete practical report with tests
+- **DOKUMENTASI.md** - Technical documentation and API reference
+- **CHECKLIST.md** - Requirement verification checklist
+
+---
+
+## Dependencies
+
+| Dependency | Version | Purpose |
+|-----------|---------|---------|
+| JavaFX | 21.0.2 | GUI framework |
+| PostgreSQL JDBC | 42.7.1 | Database driver |
+| JUnit | 4.13.2 | Testing framework |
+| Maven Compiler | 3.11.0 | Build tool |
+
+---
+
+## Troubleshooting
+
+### Issue: Database Connection Failed
+**Solution:** 
+- Check PostgreSQL is running
+- Verify connection string: `jdbc:postgresql://localhost:5432/agripos`
+- Check credentials: user=postgres, password=postgres
+
+### Issue: TableView Empty
+**Solution:**
+- Click "Refresh" button to load data
+- Check database has products table
+- Check products table is not empty
+
+### Issue: Add Product Failed
+**Solution:**
+- Fill all fields (Code, Name, Price, Stock)
+- Enter valid numbers for Price and Stock
+- Check database connection
+
+---
+
+## Comparison with Week 12
+
+| Feature | Week 12 | Week 13 |
+|---------|---------|---------|
+| Display | ListView | TableView |
+| Columns | N/A | 4 structured columns |
+| Event Handlers | Anonymous class | Lambda expression |
+| Data Updates | Manual refresh | Reactive (ObservableList) |
+| Delete Confirm | N/A | Alert dialog |
+
+---
+
+## Next Steps (Week 14+)
+
+Potential enhancements:
+- Add search/filter functionality
+- Implement sorting by clicking column headers
+- Add pagination for large datasets
+- Export data to CSV/PDF
+- Real-time synchronization with WebSocket
+
+---
+
+## Author
+
+**OOP Praktikum Mahasiswa**  
+Semester Ganjil 2024/2025
+
+---
+
+**Last Updated:** Week 13 Completion
+**Status:** Ready for Submission ✅ (Advanced GUI)
 
 ## 🎯 Project Overview
 

@@ -19,7 +19,7 @@ public class MainDAOTest {
         // Sesuaikan nama database 'agripos' dan password pgAdmin Anda
         String url = "jdbc:postgresql://localhost:5432/db_agripos";
         String user = "postgres";
-        String pass = "MASUKKAN_PASSWORD_PGADMIN_DISINI"; 
+        String pass = "242405"; 
 
         try (Connection conn = DriverManager.getConnection(url, user, pass)) {
             // Inisialisasi DAO

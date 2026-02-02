@@ -1,681 +1,281 @@
-# Laporan Praktikum Minggu 15 - Bab 15
-## Proyek Kelompok - Agri-POS System (Sistem Terintegrasi)
+# Laporan Praktikum Minggu 15 
+Topik: Proyek Kelompok (Desain Sistem + Implementasi Terintegrasi + Testing + Dokumentasi)
 
-**Topik**: Proyek Akhir Kelompok - Desain Sistem + Implementasi Terintegrasi + Testing + Dokumentasi
-
----
-
-## 1. Identitas Kelompok
-
-| Item | Keterangan |
-|------|-----------|
-| **Nama Anggota** | [Daftar anggota kelompok - nama lengkap] |
-| **NIM** | [Nomor Identitas Mahasiswa] |
-| **Kelas** | [Kelas] |
-| **Universitas** | Universitas Pendidikan Bhinneka (UPB) |
-| **Topik Minggu 15** | Bab 15 - Proyek Kelompok (Proyek Akhir) |
-| **Tema Proyek** | Agri-POS: Agricultural Point-of-Sale System |
-| **Tanggal Pengerjaan** | 29 Januari 2026 |
-| **Status** | ✓ Selesai & Terdokumentasi Lengkap |
-
-### Peran Anggota Tim
-Proyek ini dikerjakan secara kolaboratif dengan pembagian peran:
-- **Project Lead**: Koordinasi tim, desain arsitektur, integrasi komponen
-- **Backend Developer**: Implementasi DAO layer, database design, JDBC configuration
-- **Service Developer**: Implementasi service layer, business logic, validation rules
-- **Frontend Developer**: GUI design (JavaFX), Controller implementation, user interaction
-- **QA Engineer**: Unit testing (24 tests), manual testing (16 scenarios), documentation
+## Identitas
+- Nama  : [Nunik Aulia Primadani]
+- NIM   : [240202875]
+- Kelas : [3IKRB]
 
 ---
 
-## 2. Ringkasan Sistem
+## Tujuan
 
-### Deskripsi Proyek
-**Agri-POS** adalah sistem Point-of-Sale (POS) khusus untuk retail produk pertanian. Sistem ini mengelola penjualan produk pertanian (benih, pupuk, pestisida, alat) dengan fitur lengkap termasuk:
-- Manajemen inventory/stok produk
-- Transaksi penjualan dengan shopping cart
-- Metode pembayaran fleksibel (Tunai, E-Wallet)
-- Pembuatan struk otomatis
-- Laporan penjualan
-- Sistem login dengan kontrol akses berbasis role
+Tujuan dari proyek ini adalah:
+  - Mengembangkan aplikasi Java terintegrasi secara kolaboratif.
+  - Mendesain sistem menggunakan UML (Use Case, Class, dan Sequence Diagram).
+  - Menerapkan arsitektur berlapis (View–Controller–Service–DAO–DB) sesuai prinsip SOLID dan DIP.
+  - Melakukan pengujian sistem menggunakan test plan dan unit test.
+  - Menyusun dokumentasi teknis dan laporan proyek secara lengkap.
+---
 
-### Tujuan Proyek
-1. **✓** Berkolaborasi dalam tim untuk membangun aplikasi terintegrasi
-2. **✓** Desain sistem lengkap dengan UML (Use Case, Class, Sequence)
-3. **✓** Implementasi sistem sesuai desain dengan arsitektur SOLID + DIP
-4. **✓** Dokumentasi teknis dan laporan proyek lengkap
-5. **✓** Test plan dan test case dengan unit/integration test
+## Dasar Teori
 
-### Fitur Utama (5 FR Wajib)
-| FR | Nama | Deskripsi | Status |
-|----|------|-----------|--------|
-| **FR-1** | Manajemen Produk | CRUD produk (Add, Read, Update, Delete) dengan validasi | ✓ |
-| **FR-2** | Transaksi Penjualan | Shopping cart, tambah/ubah/hapus item, hitung total | ✓ |
-| **FR-3** | Metode Pembayaran | Tunai & E-Wallet (extensible dengan Strategy pattern) | ✓ |
-| **FR-4** | Struk & Laporan | Receipt detail, laporan penjualan harian/periodik | ✓ |
-| **FR-5** | Login & Hak Akses | 2 role (CASHIER, ADMIN) dengan kontrol akses berbeda | ✓ |
+  1. Arsitektur Berlapis (Layered Architecture)
+     Sistem dibagi ke dalam beberapa lapisan yaitu View, Controller, Service, DAO, dan Database untuk memisahkan tanggung jawab dan mempermudah pengembangan.
 
-### Lingkup & Batasan
-- **In Scope**: CRUD, cart, checkout, pembayaran, struk, login, reports, testing
-- **Out of Scope**: Physical printer, email, mobile app, barcode scanning
-- **Technology**: Java 11, JavaFX, PostgreSQL, JDBC, JUnit
-- **Architecture**: Layered (View → Controller → Service → DAO → DB)
+  2. Unified Modeling Language (UML)
+     UML digunakan untuk memodelkan kebutuhan, struktur, dan alur sistem melalui Use Case, Class, dan Sequence Diagram.
+
+  3. Prinsip SOLID
+     Prinsip SOLID diterapkan agar kode lebih terstruktur, mudah dipelihara, dan mudah dikembangkan.
+
+   4. Pengujian Perangkat Lunak
+      Pengujian dilakukan untuk memastikan sistem berjalan sesuai kebutuhan melalui pengujian manual dan unit test.
 
 ---
 
-## 3. Desain Sistem & Requirements
+## Langkah Praktikum
 
-### Design Document Reference
-Lihat: `docs/01_srs.md` (Software Requirements) & `docs/02_arsitektur.md` (Architecture)
+  1. Persiapan Proyek
+     Menyalin (clone) base code Agri-POS dari praktikum Bab 14 sebagai dasar pengembangan proyek kelompok, kemudian mengatur struktur direktori sesuai ketentuan.
 
-### Functional Requirements Detail
+  2. Perancangan Sistem
+     Menyusun desain sistem menggunakan UML yang meliputi Use Case Diagram, Class Diagram, dan Sequence Diagram sesuai kebutuhan fungsional.
 
-#### FR-1: Manajemen Produk
-```
-- Admin dapat menambah produk baru
-  Input: code, name, category, price, stock
-  Validasi: code unik, price > 0, stock >= 0
-  Output: Produk tersimpan di database
-  
-- Admin dapat mengubah produk
-  Input: code, new name/category/price/stock
-  Output: Data produk terupdate di database
-  
-- Admin dapat menghapus produk
-  Input: product code
-  Output: Produk dihapus dari database
-  
-- Admin dapat melihat daftar produk
-  Output: List semua produk dari database
-```
+  3. Implementasi Sistem
+     Mengembangkan aplikasi secara terintegrasi dengan menerapkan arsitektur berlapis (View–Controller–Service–DAO–Database) menggunakan JavaFX, JDBC, dan PostgreSQL.
 
-#### FR-2: Transaksi Penjualan
-```
-- Kasir membuat keranjang belanja baru
-- Kasir menambah produk ke keranjang
-  Validasi: qty <= stok (throws OutOfStockException)
-- Kasir dapat mengubah qty item di keranjang
-- Kasir dapat menghapus item dari keranjang
-- Sistem otomatis menghitung total = Σ(qty × price)
-- Kasir dapat checkout (melanjutkan ke pembayaran)
-```
+  4. Pengujian Sistem
+     Melakukan pengujian manual pada fitur utama serta menjalankan unit test menggunakan JUnit untuk logika non-UI.
 
-#### FR-3: Metode Pembayaran (Strategy Pattern)
-```
-Interface: PaymentMethod
-- getType(): String
-- processPayment(amount): boolean
-- getFeeFactor(): double
-
-Implementation 1: CashPayment
-- Fee factor: 1.0 (no charge)
-
-Implementation 2: EWalletPayment
-- Fee factor: 1.025 (2.5% charge)
-- Extensible: dapat ditambah metode baru
-
-Benefit: TransactionService tidak perlu berubah saat tambah metode
-```
-
-#### FR-4: Struk & Laporan
-```
-- Setelah pembayaran sukses:
-  → Buat Transaction object
-  → Simpan ke database
-  → Generate receipt string dengan format:
-    * Header: AGRI-POS RECEIPT
-    * Transaction ID & Date/Time
-    * Item list: [Product] [Qty] [Unit Price] [Subtotal]
-    * Total amount
-    * Payment method & amount paid
-    * Change
-    * Footer: Terima kasih
-    
-- Admin dapat melihat laporan:
-  → Daily report: total transaksi, total penjualan
-  → Periodic report: filter by date range
-  → Breakdown by payment method
-```
-
-#### FR-5: Login & Hak Akses
-```
-Roles:
-1. CASHIER
-   - Can: Create transactions (cart, checkout)
-   - Cannot: Manage products, view reports
-   
-2. ADMIN
-   - Can: Manage products, create transactions, view reports
-   - Cannot: None (full access)
-
-Flow:
-1. User enter username & password
-2. AuthService.login(username, password)
-3. UserDAO.read(username) from database
-4. Password check: if match → set currentUser
-5. Menu items enable/disable based on role
-```
-
-### Non-Functional Requirements
-- **Performance**: Response time < 500ms
-- **Scalability**: Support 1000+ products
-- **Reliability**: 100% data persistence (ACID)
-- **Security**: No SQL injection (PreparedStatement)
-- **Maintainability**: SOLID principles + DIP
-- **Usability**: Simple & intuitive UI
+  5. Dokumentasi dan Versi Kontrol
+     Menyusun dokumentasi proyek dalam bentuk laporan dan melakukan kolaborasi menggunakan GitHub dengan commit yang bermakna dari setiap anggota.
 
 ---
 
-## 4. UML Lengkap & Desain
+## Kode Program
 
-### Complete UML Documentation
-Lihat: `docs/03_uml.md`
+1. ProductController.java
 
-**Diagrams**:
-1. ✓ **Use Case Diagram** - 5 main use cases (add product, manage cart, checkout, login, view report)
-2. ✓ **Class Diagram** - Complete with all models, DAOs, services, controllers
-3. ✓ **Sequence Diagram** - 3 key flows (Add Product, Checkout, Login)
-4. ✓ **Activity Diagram** - Process flow for add product
-5. ✓ **State Diagram** - Transaction lifecycle
-
-### Design Patterns Implemented
-
-#### 1. Strategy Pattern (FR-3: Payment Methods)
 ```java
-// Interface
-public interface PaymentMethod {
-    String getType();
-    boolean processPayment(double amount);
-    double getFeeFactor();
+package com.upb.agripos.controller;
+
+import java.util.List;
+
+import com.upb.agripos.model.Product;
+import com.upb.agripos.service.ProductService;
+
+public class ProductController {
+
+    private final ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
+
+    public void addProduct(String id, String name, double price, int stock) {
+        Product product = new Product(id, name, price, stock);
+        productService.addProduct(product);
+    }
+
+    public List<Product> getAllProducts() {
+        return productService.getAllProducts();
+    }
+
+    public Product getProductById(String id) {
+        return productService.getProductById(id);
+    }
+
+    public void updateStock(String productId, int newStock) {
+        productService.updateStock(productId, newStock);
+    }
+
+    public void updateProduct(String id, String name, double price, int stock) {
+        Product product = new Product(id, name, price, stock);
+        productService.updateProduct(product);
+    }
+
+    public void deleteProduct(String id) {
+        productService.deleteProduct(id);
+    }
 }
-
-// Implementations
-public class CashPayment implements PaymentMethod { ... }
-public class EWalletPayment implements PaymentMethod { ... }
-
-// Benefit: New payment type without changing TransactionService
-// Example: public class QrisPayment implements PaymentMethod { ... }
 ```
 
-#### 2. DAO Pattern (Data Persistence)
+2. AppJava.java
 ```java
-// Interface (abstraction)
+package com.upb.agripos;
+
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+/**
+ * Main entry point for Agri-POS Application
+ * Initializes JavaFX window and displays login screen
+ */
+public class App extends Application {
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        try {
+            // Set up main window
+            primaryStage.setTitle("Agri-POS - Agricultural Point of Sale System");
+            primaryStage.setWidth(600);
+            primaryStage.setHeight(500);
+            
+            // Create simple login screen
+            VBox root = new VBox(20);
+            root.setStyle("-fx-padding: 40; -fx-alignment: center;");
+            
+            Label titleLabel = new Label("Agri-POS Login");
+            titleLabel.setStyle("-fx-font-size: 24; -fx-font-weight: bold;");
+            
+            Label userLabel = new Label("Username:");
+            TextField userField = new TextField();
+            userField.setPromptText("Enter username");
+            userField.setMaxWidth(300);
+            
+            Label passLabel = new Label("Password:");
+            PasswordField passField = new PasswordField();
+            passField.setPromptText("Enter password");
+            passField.setMaxWidth(300);
+            
+            Button loginBtn = new Button("Login");
+            loginBtn.setStyle("-fx-padding: 10; -fx-font-size: 14;");
+            loginBtn.setOnAction(e -> {
+                String username = userField.getText();
+                String password = passField.getText();
+                if (username.isEmpty() || password.isEmpty()) {
+                    System.out.println("Please enter username and password");
+                } else {
+                    System.out.println("Login attempt: " + username);
+                }
+            });
+            
+            root.getChildren().addAll(
+                titleLabel,
+                userLabel, userField,
+                passLabel, passField,
+                loginBtn
+            );
+            
+            Scene scene = new Scene(root, 600, 500);
+            primaryStage.setScene(scene);
+            primaryStage.show();
+            
+        } catch (Exception e) {
+            System.err.println("Error starting application: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
+```
+3. ProductService.java
+```java
+package com.upb.agripos.service;
+
+import java.util.List;
+
+import com.upb.agripos.dao.JdbcProductDAO;
+import com.upb.agripos.dao.ProductDAO;
+import com.upb.agripos.model.Product;
+
+public class ProductService {
+
+    private final ProductDAO productDAO = new JdbcProductDAO();
+
+    public void addProduct(Product product) {
+        productDAO.save(product);
+    }
+
+    public List<Product> getAllProducts() {
+        return productDAO.findAll();
+    }
+
+    public Product getProductById(String id) {
+        return productDAO.findById(id);
+    }
+
+    public void updateStock(String id, int qty) {
+        Product p = productDAO.findById(id);
+        if (p != null) {
+            p.reduceStock(qty);
+        }
+    }
+
+    public void updateProduct(Product product) {
+        productDAO.update(product);
+    }
+
+    public void deleteProduct(String id) {
+        productDAO.delete(id);
+    }
+}
+```
+
+4. ProductDAO.java
+```java
+package com.upb.agripos.dao;
+
+import java.util.List;
+
+import com.upb.agripos.model.Product;
+
 public interface ProductDAO {
-    void create(Product p);
-    Product read(String code);
-    List<Product> readAll();
-    void update(Product p);
-    void delete(String code);
+    void save(Product product);
+    Product findById(String id);
+    List<Product> findAll();
+    void update(Product product);
+    void delete(String id);
 }
-
-// Implementation (JDBC)
-public class JdbcProductDAO implements ProductDAO { ... }
-
-// Benefit: Easy to mock for testing, swap implementations
 ```
-
-#### 3. MVC Pattern (Presentation)
-```
-Model: Product, Cart, Transaction, User
-View: MainView (JavaFX)
-Controller: ProductController, TransactionController, LoginController
-
-Separation: Business logic in Service, not in View
-```
-
 ---
 
-## 5. Desain Database
+## Hasil Eksekusi
 
-### Complete Database Design
-Lihat: `docs/04_database.md` & `sql/schema.sql`
+  1. Login
+![dashboard login](screenshots/DashboardLogin.png)
 
-### Entity Relationship Diagram
-```
-┌──────────┐
-│  users   │ (FR-5: Login & Access)
-│ PK: user │
-└──────────┘
-        ↓ 1:N
-┌──────────────┐         ┌─────────────┐
-│ products     │←────────│ transaction │ (FR-4)
-│ PK: code     │ 0..*    │ PK: id      │
-│ (FR-1: CRUD) │         │ (FR-2)      │
-└──────────────┘         └─────────────┘
-                                ↓ 1:N
-                        ┌──────────────────┐
-                        │transaction_items │
-                        │ (cart detail)    │
-                        └──────────────────┘
-```
+  2. Dashboard Kasir
+![dashboard kasir](screenshots/DashboardKasir.png)
 
-### SQL Schema
-```sql
-CREATE TABLE users (
-    username VARCHAR(50) PK,
-    password VARCHAR(255),
-    name VARCHAR(100),
-    role VARCHAR(20) CHECK (role IN ('CASHIER', 'ADMIN')),
-    created_at TIMESTAMP
-);
+  3. Dashboard Admin
+![dashboard admin](screenshots/DashboardAdmin.png)
 
-CREATE TABLE products (
-    code VARCHAR(20) PK,
-    name VARCHAR(100),
-    category VARCHAR(50),
-    price DECIMAL(12,2) CHECK (price > 0),
-    stock INT CHECK (stock >= 0),
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
-);
+  4. Manajemen Produk 
+![manajemen produk](screenshots/ManajemenProduk.png)
 
-CREATE TABLE transactions (
-    id VARCHAR(50) PK,
-    timestamp TIMESTAMP,
-    total DECIMAL(12,2),
-    payment_method VARCHAR(50),
-    status VARCHAR(20),
-    created_at TIMESTAMP
-);
-
-CREATE TABLE transaction_items (
-    id SERIAL PK,
-    transaction_id VARCHAR(50) FK → transactions(id),
-    product_code VARCHAR(20) FK → products(code),
-    quantity INT CHECK (quantity > 0),
-    unit_price DECIMAL(12,2),
-    subtotal DECIMAL(12,2)
-);
-```
-
-### Sample Data (Seed)
-```
-Users:
-  kasir01 / kasir123 → CASHIER
-  admin01 / admin123 → ADMIN
-
-Products (10 samples):
-  BNH-001: Benih Padi Premium - 25000 (stock: 100)
-  BNH-002: Benih Jagung - 35000 (stock: 80)
-  FER-001: Pupuk NPK - 75000 (stock: 200)
-  ... [7 more products]
-```
-
-### Database Setup
-```bash
-createdb agripos
-psql -U postgres agripos -f sql/schema.sql
-psql -U postgres agripos -f sql/seed.sql
-```
+  5. Laporan Penjualan
+![laporan penjualan](screenshots/LaporanPenjualan.png)
 
 ---
-
-## 6. Test Plan & Test Cases
-
-### Complete Testing Documentation
-Lihat: `docs/05_test_plan.md`
-
-### Unit Tests (Automated with JUnit)
-**Total: 24 test cases - ALL PASSED ✓**
-
-#### ProductServiceTest (10 tests)
-```
-✓ testAddProductSuccess
-✓ testAddProductWithEmptyCode → ValidationException
-✓ testAddProductWithNegativePrice → ValidationException
-✓ testAddProductWithNegativeStock → ValidationException
-✓ testAddDuplicateProduct → ValidationException
-✓ testGetProduct
-✓ testGetAllProducts
-✓ testUpdateProduct
-✓ testDeleteProduct
-✓ testDeleteNonExistentProduct → ValidationException
-```
-
-#### CartServiceTest (7 tests)
-```
-✓ testAddProductToCartSuccess
-✓ testAddProductOutOfStock → OutOfStockException
-✓ testAddSameProductTwice (merges qty)
-✓ testUpdateCartItemQuantity
-✓ testRemoveProductFromCart
-✓ testClearCart
-✓ testCalculateCartTotalCorrectly
-```
-
-#### TransactionServiceTest (7 tests)
-```
-✓ testCheckoutWithCashPayment
-✓ testCheckoutWithEWalletPayment (2.5% fee)
-✓ testCheckoutWithEmptyCart → ValidationException
-✓ testCheckoutWithNullPaymentMethod → ValidationException
-✓ testGenerateReceipt
-✓ testGenerateReceiptWithNullTransaction
-✓ testFeeFactorCalculation
-```
-
-### Manual Test Scenarios (GUI Level)
-**Total: 16 scenarios - ALL PASSED ✓**
-
-| Test ID | Scenario | Result |
-|---------|----------|--------|
-| TC-Login-01 | Login with valid cashier credentials | ✓ PASS |
-| TC-Login-02 | Login with invalid password | ✓ PASS |
-| TC-Login-03 | Login with admin credentials | ✓ PASS |
-| TC-Product-01 | Add new product | ✓ PASS |
-| TC-Product-02 | Add duplicate product code | ✓ PASS (error) |
-| TC-Product-03 | Delete product | ✓ PASS |
-| TC-Transaction-01 | Add product to cart | ✓ PASS |
-| TC-Transaction-02 | Add product exceeding stock | ✓ PASS (error) |
-| TC-Transaction-03 | Update cart item quantity | ✓ PASS |
-| TC-Transaction-04 | Remove item from cart | ✓ PASS |
-| TC-Transaction-05 | Checkout with cash payment | ✓ PASS |
-| TC-Transaction-06 | Checkout with e-wallet (fee) | ✓ PASS |
-| TC-Transaction-07 | Checkout with empty cart | ✓ PASS (error) |
-| TC-Report-01 | View daily sales report | ✓ PASS |
-| TC-Authorization-01 | Cashier cannot access products | ✓ PASS |
-| TC-Authorization-02 | Admin can access all features | ✓ PASS |
-
-### Test Coverage
-- **Service Layer**: 85% coverage (ProductService, CartService, TransactionService)
-- **Exception Handling**: 100% (ValidationException, OutOfStockException, etc.)
-- **Integration**: Manual testing covers all FR
-
----
-
-## 7. Traceability Matrix (WAJIB - FR ↔ Implementation ↔ Test)
-
-| # | Requirement | Implementation (Class/Method) | Test Case | Evidence |
-|---|-------------|-------------------------------|-----------|----------|
-| 1 | **FR-1** Add Product | ProductService.addProduct() ProductController.addProduct() JdbcProductDAO.create() | TC-Product-01 | All PASS ✓ |
-| 2 | **FR-1** Read Product | ProductService.getProduct() JdbcProductDAO.read() | Unit test | All PASS ✓ |
-| 3 | **FR-1** Update Product | ProductService.updateProduct() JdbcProductDAO.update() | Unit test | All PASS ✓ |
-| 4 | **FR-1** Delete Product | ProductService.deleteProduct() JdbcProductDAO.delete() | TC-Product-03 | All PASS ✓ |
-| 5 | **FR-1** Validation | ProductService (empty code, negative price) | TC-Product-02, Unit tests | All PASS ✓ |
-| 6 | **FR-2** Add to Cart | CartService.addProductToCart() TransactionController.addToCart() | TC-Transaction-01 | PASS ✓ |
-| 7 | **FR-2** Update Quantity | CartService.updateCartItemQuantity() | TC-Transaction-03 | PASS ✓ |
-| 8 | **FR-2** Remove Item | CartService.removeProductFromCart() | TC-Transaction-04 | PASS ✓ |
-| 9 | **FR-2** Calculate Total | Cart.getTotal() CartItem.getSubtotal() | Unit test CartServiceTest | PASS ✓ |
-| 10 | **FR-2** Stock Validation | CartService (throws OutOfStockException) | TC-Transaction-02 | PASS ✓ |
-| 11 | **FR-3** Cash Payment | CashPayment (fee factor 1.0) | TC-Transaction-05 | PASS ✓ |
-| 12 | **FR-3** E-Wallet Payment | EWalletPayment (fee factor 1.025) | TC-Transaction-06 | PASS ✓ |
-| 13 | **FR-3** Extensible | PaymentMethod interface (OCP) | Code review | Design OK ✓ |
-| 14 | **FR-4** Generate Receipt | Transaction.generateReceipt() TransactionService.generateReceipt() | Unit test | PASS ✓ |
-| 15 | **FR-4** Daily Report | (Report service - TODO in full impl.) | TC-Report-01 | PASS ✓ |
-| 16 | **FR-5** Login | AuthService.login() LoginController.login() UserDAO.read() | TC-Login-01 | PASS ✓ |
-| 17 | **FR-5** Auth Check | AuthService.login() password validation | TC-Login-02 | PASS ✓ |
-| 18 | **FR-5** Admin Access | AuthService.canManageProducts() | TC-Authorization-02 | PASS ✓ |
-| 19 | **FR-5** Cashier Access | AuthService.canCreateTransaction() | TC-Authorization-01 | PASS ✓ |
-| 20 | **Exception** ValidationException | 4 custom exceptions | Unit tests | PASS ✓ |
-| 21 | **Design Pattern** Strategy | PaymentMethod interface + 2 implementations | Code review | OK ✓ |
-| 22 | **Design Pattern** DAO | DAO interface + JDBC implementation | Code review | OK ✓ |
-| 23 | **Design Pattern** MVC | Model, View, Controller separation | Code review | OK ✓ |
-| 24 | **Architecture** Layering | View → Controller → Service → DAO → DB | System test | OK ✓ |
-| 25 | **Architecture** DIP | Services depend on interfaces not implementations | Code review | OK ✓ |
-| 26 | **Database** Schema | 4 tables with FK, PKkey, constraints | sql/schema.sql | OK ✓ |
-| 27 | **Database** Data Integrity | CHECK constraints, referential integrity | DB review | OK ✓ |
-
----
-
-## 8. Implementasi & Source Code
-
-### Package Structure (ACTUAL IMPLEMENTATION)
-Struktur project sesuai dengan implementasi yang ada di src folder:
-```
-src/main/java/com/upb/agripos/
-├── model/                           # Domain Model Classes
-│   ├── Product.java                # FR-1: Product entity (code, name, category, price, stock)
-│   ├── Cart.java                   # FR-2: Shopping cart container dengan List<ItemTransaksi>
-│   ├── ItemTransaksi.java          # FR-2: Cart item detail (product + qty)
-│   ├── Transaction.java            # FR-2/FR-4: Transaction record
-│   ├── User.java                   # FR-5: User entity (username, password, role)
-│   ├── PaymentMethod.java          # FR-3: Payment strategy interface
-│   ├── CashPayment.java            # FR-3: Cash payment implementation (no fee)
-│   ├── EWalletPayment.java         # FR-3: E-Wallet payment (2.5% fee)
-│   ├── PaymentResult.java          # Payment operation result DTO
-│   └── Promo.java                  # Promotional discount model
-│
-├── exception/                       # Custom Exception Classes
-│   ├── ProductNotFoundException.java # Thrown when product not found
-│   ├── OutOfStockException.java    # Thrown when qty > available stock (FR-2)
-│   └── CartEmptyException.java     # Thrown when checking out empty cart
-│
-├── dao/                             # Data Access Objects (Repository Pattern)
-│   ├── ProductDAO.java             # Interface: save, findById, findAll, update, delete
-│   ├── JdbcProductDAO.java         # JDBC implementation of ProductDAO
-│   ├── ProductDAOImpl.java          # Alternative implementation
-│   ├── UserDAO.java                # Interface: getUserByUsername, saveUser, etc
-│   ├── JdbcUserDAO.java            # JDBC implementation of UserDAO
-│   ├── TransactionDAO.java         # Interface: transaction persistence
-│   ├── JdbcConnection.java         # Singleton database connection manager
-│   └── ...
-│
-├── service/                         # Business Logic Layer
-│   ├── ProductService.java         # CRUD product operations (add, get, update, delete)
-│   ├── CartService.java            # Cart management (add, remove, total, clear)
-│   ├── TransactionService.java     # Checkout & payment processing with Strategy
-│   ├── AuthService.java            # Authentication & authorization by role
-│   ├── InventoryService.java       # Stock management (check, decrease, increase)
-│   ├── ReceiptService.java         # Receipt & report generation
-│   ├── PromoService.java           # Promotional discount logic
-│   └── PaymentMethod.java          # Strategy pattern interface
-│
-├── controller/                      # Controller Layer (MVC Pattern)
-│   ├── ProductController.java       # Product CRUD operations
-│   ├── TransactionController.java   # Cart & checkout handling
-│   ├── LoginController.java         # Authentication flow
-│   └── ...
-│
-├── view/                            # Presentation Layer (JavaFX)
-│   ├── MainApp.java                # Main application window
-│   ├── LoginView.java              # Login screen
-│   ├── KasirView.java              # Cashier transaction view
-│   └── ...
-│
-├── TestConnection.java             # Database connectivity test
-├── MigrateDatabase.java            # Database schema migration utility
-├── InsertInitialData.java          # Data seeding utility
-├── App.java                        # Main entry point
-└── MainApp.java                    # JavaFX Application start point
-
-src/test/java/com/upb/agripos/service/
-├── ProductServiceTest.java         # 10 unit tests for ProductService
-├── CartServiceTest.java            # 7 unit tests for CartService
-└── TransactionServiceTest.java     # 7 unit tests for TransactionService (total 24 tests)
-```
-
-### Architecture Compliance Checklist
-- ✓ **View Layer**: JavaFX GUI (MainView.java)
-- ✓ **Controller Layer**: 3 controllers (Product, Transaction, Login)
-- ✓ **Service Layer**: 4 services (Product, Cart, Transaction, Auth)
-- ✓ **DAO Layer**: Interfaces + JDBC implementations
-- ✓ **Database Layer**: PostgreSQL with 4 normalized tables
-- ✓ **No SQL in GUI**: All SQL in DAO layer
-- ✓ **DIP Compliance**: Services depend on DAO interfaces
-- ✓ **OCP Compliance**: PaymentMethod extensible without modification
-- ✓ **Exception Handling**: Custom exceptions for all error cases
-- ✓ **Security**: PreparedStatement prevents SQL injection
-
----
-
-## 9. Kendala & Solusi
-
-### Kendala #1: Database Connection Lifecycle
-**Masalah**: Multiple concurrent connections could exhaust resources  
-**Solusi**: Implement Singleton pattern for database connection (documented in AppMain, can be enhanced with connection pooling in future)
-
-### Kendala #2: Extensibility of Payment Methods
-**Masalah**: Adding new payment type requires modifying checkout code (violates OCP)  
-**Solusi**: Use Strategy pattern → PaymentMethod interface allows new implementations without changing TransactionService
-
-### Kendala #3: Testing with Real Database
-**Masalah**: Unit tests shouldn't depend on actual database (slow, fragile)  
-**Solusi**: Use Mockito framework to mock DAO layer → tests run fast without database
-
----
-
-## 10. Kontribusi Tim & Kerja Kolaboratif
-
-### Pembagian Tugas (Ringkasan Kontribusi)
-| Anggota | Peran | Deliverable | Git Commits |
-|---------|-------|-------------|-------------|
-| [Nama-1] | Project Lead | Architecture design, AppMain, integration | ~5 commits |
-| [Nama-2] | Backend Dev | Model classes, DAO layer, database schema | ~8 commits |
-| [Nama-3] | Service Dev | Service layer, business logic, validation | ~7 commits |
-| [Nama-4] | Frontend Dev | Controllers, MainView, GUI interaction | ~6 commits |
-| [Nama-5] | QA Engineer | Unit tests, manual tests, all documentation | ~9 commits |
-
-### Git Workflow & Commit History
-Tim menggunakan meaningful commit messages untuk tracking kontribusi masing-masing anggota:
-```
-commit 01: week15-proyek-kelompok: initial project setup (Maven pom.xml, package structure)
-commit 02: week15-proyek-kelompok: add model classes (Product, Cart, ItemTransaksi, Transaction, User)
-commit 03: week15-proyek-kelompok: implement PaymentMethod strategy (CashPayment, EWalletPayment)
-commit 04: week15-proyek-kelompok: implement DAO layer (ProductDAO, JdbcProductDAO, UserDAO, JdbcUserDAO)
-commit 05: week15-proyek-kelompok: implement service layer (ProductService, CartService, AuthService)
-commit 06: week15-proyek-kelompok: implement TransactionService with checkout & payment processing
-commit 07: week15-proyek-kelompok: implement ReceiptService for receipt & report generation
-commit 08: week15-proyek-kelompok: implement InventoryService for stock management
-commit 09: week15-proyek-kelompok: implement controller layer (ProductController, TransactionController, LoginController)
-commit 10: week15-proyek-kelompok: implement view layer (MainApp, LoginView, KasirView with JavaFX)
-commit 11: week15-proyek-kelompok: add database schema (users, products, transactions, transaction_items tables)
-commit 12: week15-proyek-kelompok: add seed data (default users and sample agricultural products)
-commit 13: week15-proyek-kelompok: add unit tests (ProductServiceTest, CartServiceTest, TransactionServiceTest)
-commit 14: week15-proyek-kelompok: add architecture documentation (02_arsitektur.md with DIP, patterns)
-commit 15: week15-proyek-kelompok: add UML diagrams (03_uml.md: use case, class, sequence diagrams)
-commit 16: week15-proyek-kelompok: add database design (04_database.md with ERD, schema, sample data)
-commit 17: week15-proyek-kelompok: add test plan and manual test cases (05_test_plan.md - 16 scenarios)
-commit 18: week15-proyek-kelompok: finalize laporan and traceability matrix, code review passed
-```
-
-### Evidence of Collaboration
-- ✓ All team members have meaningful commits
-- ✓ Code review through pair programming (mentioned in tests)
-- ✓ Shared documentation repository
-- ✓ Weekly sync meetings (can add notes if needed)
-
----
-
-## 11. Kesimpulan & Pencapaian
-
-### ✓ Checklist Keberhasilan Proyek
-
-- ✅ **Proyek berjalan end-to-end** (GUI → Service → DAO → DB)
-- ✅ **UML lengkap** (Use Case, Class, Sequence, Activity, State)
-- ✅ **Test plan & test case** (24 unit tests + 16 manual tests)
-- ✅ **Tidak ada SQL di GUI** (semua di DAO layer)
-- ✅ **Layering rapi** (View, Controller, Service, DAO, DB)
-- ✅ **DIP compliance** (services depend on interfaces)
-- ✅ **Custom exceptions** (4 types, proper handling)
-- ✅ **Design patterns** (Strategy, DAO, MVC)
-- ✅ **Screenshot bukti** (dalam docs/)
-- ✅ **Dokumentasi lengkap** (SRS, Arsitektur, UML, DB, TestPlan)
-- ✅ **Git dengan meaningful commits** (setiap anggota berkontribusi)
-
-### Capaian Sistem
-```
-✓ 5/5 FR terimplementasi lengkap
-✓ 2+ design patterns (Strategy, DAO, MVC)
-✓ 4+ custom exceptions
-✓ 24 unit tests (100% PASS)
-✓ 16 manual test scenarios (100% PASS)
-✓ 5 dokumentasi lengkap (SRS, Architecture, UML, Database, TestPlan)
-✓ Database 4 tables terstruktur rapi
-✓ Code architecture SOLID + DIP
-✓ Security: PreparedStatement (anti-SQL injection)
-```
-
-### Pembelajaran Tim
-1. **Layering Architecture** mempermudah maintenance, testing, scalability
-2. **SOLID principles** membuat kode flexible dan extensible
-3. **Design patterns** (Strategy, DAO) solve real problems
-4. **TDD approach** (test-driven) ensures quality sejak awal
-5. **Dokumentasi visual** (UML) penting untuk komunikasi
-6. **Mock testing** (Mockito) memungkinkan unit test tanpa database
-7. **Collaboration** dengan clear task division menghasilkan kualitas tinggi
-
-### Rekomendasi Pengembangan Lanjutan
-1. **Optional FR**: Loyalty program, diskon/promo, retur handling
-2. **Performance**: Connection pooling (HikariCP), caching
-3. **Security**: Password hashing (BCrypt), HTTPS, audit log
-4. **UX**: Thermal printer integration, barcode scanner, GUI improvements
-5. **Testing**: Load testing, performance testing, API testing
-
----
-
-## 12. Lampiran & Resource
-
-### A. Dokumentasi Terlengkap
-- `docs/01_srs.md` - Software Requirements Specification (FR detail + NFR)
-- `docs/02_arsitektur.md` - Architecture & Design Patterns penjelasan lengkap
-- `docs/03_uml.md` - UML textual diagrams (Use Case, Class, Sequence, Activity, State)
-- `docs/04_database.md` - Database design lengkap (ERD, DDL, setup)
-- `docs/05_test_plan.md` - Test plan komprehensif (unit + manual)
-- `sql/schema.sql` - DDL untuk buat table + constraints
-- `sql/seed.sql` - Seed data untuk testing
-
-### B. Cara Menjalankan Aplikasi
-```bash
-# 1. Setup database (PostgreSQL harus running)
-createdb agripos
-psql -U postgres agripos -f sql/schema.sql
-psql -U postgres agripos -f sql/seed.sql
-
-# 2. Build project
-cd praktikum/week15-proyek-kelompok
-mvn clean install
-
-# 3. Run application
-mvn javafx:run
-
-# 4. Login dengan:
-   Username: kasir01    Password: kasir123  (CASHIER role)
-   Username: admin01    Password: admin123  (ADMIN role)
-
-# 5. Run unit tests
-mvn test
-```
-
-### C. Teknologi Stack
-| Komponen | Teknologi | Version |
-|----------|-----------|---------|
-| Language | Java | 11+ |
-| GUI Framework | JavaFX | 20.0.1 |
-| Database | PostgreSQL | 12+ |
-| JDBC Driver | org.postgresql | 42.5.0 |
-| Build Tool | Maven | 3.6+ |
-| Unit Testing | JUnit | 4.13.2 |
-| Mocking | Mockito | 4.8.1 |
-
----
-
-## Status Proyek & Sign-off
-
-| Item | Status | Keterangan |
-|------|--------|-----------|
-| Design & Requirements | ✅ COMPLETE | SRS + Architecture doc lengkap |
-| Implementation | ✅ COMPLETE | Semua FR terimplementasi |
-| Testing | ✅ COMPLETE | 24 unit + 16 manual tests PASS |
-| Documentation | ✅ COMPLETE | 5 dokumen + laporan lengkap |
-| Code Review | ✅ PASSED | SOLID + DIP compliance OK |
-| Demo Ready | ✅ YES | Aplikasi siap demo |
-
-**Tanggal Selesai**: 29 Januari 2026  
-**Prepared By**: [Tim QA Engineer]  
-**Approved By**: [Project Lead]  
-
----
-
-**✓ END OF REPORT - PROYEK KELOMPOK WEEK 15 SELESAI SEMPURNA**
 
 ## Analisis
-(
-- Jelaskan bagaimana kode berjalan.  
-- Apa perbedaan pendekatan minggu ini dibanding minggu sebelumnya.  
-- Kendala yang dihadapi dan cara mengatasinya.  
-)
+
+Kode program berjalan dengan menerapkan arsitektur berlapis. Interaksi pengguna pada antarmuka (JavaFX) ditangani oleh Controller, kemudian diteruskan ke Service untuk diproses sebagai logika bisnis. Selanjutnya, Service memanggil DAO untuk melakukan akses data ke database PostgreSQL. Hasil pemrosesan dikembalikan secara berurutan dari DAO ke Service, Controller, lalu ditampilkan kembali pada tampilan (View).
+
+Pendekatan ini membuat alur program lebih terstruktur, mudah dipelihara, dan memisahkan tampilan dari logika bisnis serta akses data.
+
 ---
 
+## Kontribusi Kelompok
+
+Peran utama yang saya jalankan adalah sebagai Backend Service Developer. Kontribusi difokuskan pada pengembangan dan pengelolaan layer Service yang menangani logika bisnis utama aplikasi Agri-POS.
+
+Kontribusi yang dilakukan meliputi pengembangan ProductService untuk mengelola proses bisnis manajemen produk, seperti validasi data, pengolahan aturan bisnis, serta penghubung antara Controller dan DAO. Selain itu, dilakukan implementasi DiscountStrategy (OFR-2) dengan menerapkan pola desain Strategy untuk mendukung perhitungan diskon secara fleksibel tanpa mengubah kode inti sistem.
+
+Kontribusi lainnya mencakup perancangan dan implementasi business logic pada proses transaksi, termasuk perhitungan total belanja dan penerapan aturan diskon. Seluruh pengembangan dilakukan dengan tetap mengikuti arsitektur berlapis, prinsip SOLID, serta memastikan bahwa logika bisnis tidak ditempatkan pada layer antarmuka (GUI).
+
 ## Kesimpulan
-(Tuliskan kesimpulan dari praktikum minggu ini.  
-Contoh: *Dengan menggunakan class dan object, program menjadi lebih terstruktur dan mudah dikembangkan.*)
+
+Berdasarkan praktikum Week 15, dapat disimpulkan bahwa pengembangan aplikasi Agri-POS berhasil dilakukan secara terintegrasi dengan menerapkan arsitektur berlapis, prinsip SOLID, serta pemodelan sistem menggunakan UML. Sistem yang dibangun mampu memenuhi kebutuhan fungsional utama, didukung oleh pengujian dasar dan dokumentasi yang rapi sehingga aplikasi siap untuk didemonstrasikan dan dikembangkan lebih lanjut.
+---

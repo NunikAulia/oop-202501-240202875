@@ -60,26 +60,75 @@ public class AppJavaFX extends Application {
 
     /**
      * Inisialisasi koneksi ke database PostgreSQL
+     * Fallback ke H2 in-memory jika PostgreSQL tidak tersedia
      */
     private void initializeDatabase() throws Exception {
         try {
-            // Load driver JDBC
+            // Try PostgreSQL first
             Class.forName("org.postgresql.Driver");
-
-            // Setup koneksi
             String url = "jdbc:postgresql://localhost:5432/agripos";
             String user = "postgres";
             String password = "postgres";
 
             connection = DriverManager.getConnection(url, user, password);
-            System.out.println("Database connected successfully");
+            System.out.println("✓ PostgreSQL database connected successfully");
 
-        } catch (ClassNotFoundException e) {
-            System.err.println("PostgreSQL driver not found");
-            throw new Exception("Database driver not available", e);
+        } catch (Exception postgresError) {
+            System.out.println("PostgreSQL connection failed, trying H2 fallback...");
+            try {
+                // Fallback to H2 in-memory database
+                Class.forName("org.h2.Driver");
+                String url = "jdbc:h2:mem:agripos;MODE=PostgreSQL";
+                
+                connection = DriverManager.getConnection(url);
+                System.out.println("✓ H2 in-memory database connected successfully");
+                
+                // Create tables for H2
+                initializeH2Tables();
+                
+            } catch (Exception h2Error) {
+                System.err.println("Both PostgreSQL and H2 connection failed");
+                postgresError.printStackTrace();
+                h2Error.printStackTrace();
+                throw new Exception("Database connection failed - no database available", h2Error);
+            }
+        }
+    }
+
+    /**
+     * Inisialisasi table struktur untuk H2 database
+     */
+    private void initializeH2Tables() throws Exception {
+        try (java.sql.Statement stmt = connection.createStatement()) {
+            String createTableSQL = "CREATE TABLE IF NOT EXISTS products (" +
+                    "code VARCHAR(20) PRIMARY KEY, " +
+                    "name VARCHAR(100) NOT NULL, " +
+                    "price DECIMAL(12, 2) NOT NULL, " +
+                    "stock INT NOT NULL" +
+                    ")";
+            stmt.execute(createTableSQL);
+            System.out.println("  ✓ Products table created");
+            
+            // Insert sample data
+            String insertSQL = "INSERT INTO products (code, name, price, stock) VALUES (?, ?, ?, ?)";
+            try (java.sql.PreparedStatement ps = connection.prepareStatement(insertSQL)) {
+                ps.setString(1, "PROD001");
+                ps.setString(2, "Benih Padi Premium");
+                ps.setDouble(3, 50000.0);
+                ps.setInt(4, 100);
+                ps.executeUpdate();
+                
+                ps.setString(1, "PROD002");
+                ps.setString(2, "Pupuk NPK");
+                ps.setDouble(3, 15000.0);
+                ps.setInt(4, 50);
+                ps.executeUpdate();
+            }
+            System.out.println("  ✓ Sample data loaded");
+            
         } catch (Exception e) {
-            System.err.println("Failed to connect to database: " + e.getMessage());
-            throw new Exception("Database connection failed", e);
+            System.err.println("Error initializing H2 tables: " + e.getMessage());
+            throw e;
         }
     }
 

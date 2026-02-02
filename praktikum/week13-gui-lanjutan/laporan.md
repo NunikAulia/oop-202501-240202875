@@ -603,7 +603,6 @@ public class ProductService {
 ## Kesimpulan
 
 Praktikum Week 13 telah berhasil mendemonstrasikan pembuatan aplikasi GUI tingkat lanjut menggunakan Java Swing dengan focus pada JTable, Menu Bar Navigation, Dialog Boxes, dan complete CRUD operations dalam in-memory ArrayList.
-
 Aplikasi AgriPOS - Product Management menunjukkan evolusi dari GUI dasar menjadi aplikasi desktop yang lebih profesional dan user-friendly.
 
 ---

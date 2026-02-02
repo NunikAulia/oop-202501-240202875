@@ -1,13 +1,7 @@
-com\upb\agripos\ProductFrame.class
+com\upb\agripos\view\ProductFormView.class
 com\upb\agripos\AppJavaFX.class
-com\upb\agripos\ProductFrame$3.class
-com\upb\agripos\ProductFrame$2.class
+com\upb\agripos\dao\ProductDAO.class
 com\upb\agripos\service\ProductService.class
-com\upb\agripos\ProductFrame$1.class
+com\upb\agripos\dao\ProductDAOImpl.class
 com\upb\agripos\model\Product.class
 com\upb\agripos\controller\ProductController.class
-com\upb\agripos\Product.class
-com\upb\agripos\view\ProductFormView.class
-com\upb\agripos\dao\ProductDAO.class
-com\upb\agripos\dao\ProductDAOImpl.class
-com\upb\agripos\ProductFrame$4.class

@@ -52,136 +52,71 @@ Karakteristik: Alur program bersifat reaktif, bukan sequential Menggunakan callb
 ```java
 package com.upb.agripos.controller;
 
-import com.upb.agripos.model.Product;
+import com.upb.agripos.model.Product; 
 import com.upb.agripos.service.ProductService;
+import com.upb.agripos.view.ProductFormView;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class ProductController {
-    private final ProductService productService;
+    private ProductService service;
+    private ProductFormView view;
 
-    /**
-     * Constructor dengan dependency injection
-     * @param productService Service untuk Product
-     */
-    public ProductController(ProductService productService) {
-        this.productService = productService;
+    public ProductController(ProductService service, ProductFormView view) {
+        this.service = service;
+        this.view = view;
+        initController();
     }
 
-    /**
-     * Menambah produk baru
-     * Dipanggil dari View ketika tombol "Tambah" diklik
-     * 
-     * @param code Kode produk
-     * @param name Nama produk
-     * @param price Harga produk
-     * @param stock Stok produk
-     * @return true jika berhasil, false jika gagal
-     */
-    public boolean addProduct(String code, String name, String price, String stock) {
-        try {
-            // Validasi tidak boleh kosong
-            if (code == null || code.trim().isEmpty() ||
-                name == null || name.trim().isEmpty() ||
-                price == null || price.trim().isEmpty() ||
-                stock == null || stock.trim().isEmpty()) {
-                return false;
+    private void initController() {
+        loadData(); // Memasukkan data ke list saat aplikasi dibuka
+
+        // Memberi aksi pada tombol Tambah Produk
+        view.btnTambah.setOnAction(e -> {
+            try {
+                // 1. Ambil data dari kotak input (TextField)
+                String code = view.txtKode.getText();
+                String name = view.txtNama.getText();
+                double price = Double.parseDouble(view.txtHarga.getText());
+                int stock = Integer.parseInt(view.txtStok.getText());
+
+                // 2. Buat objek Product (Sesuai dengan constructor Product.java kamu)
+                Product newProduct = new Product(code, name, price, stock);
+                
+                // 3. Simpan lewat Service
+                service.addProduct(newProduct);
+                
+                // 4. Refresh tampilan dan kosongkan inputan
+                loadData();
+                clearFields();
+                System.out.println("Data berhasil disimpan!");
+
+            } catch (NumberFormatException ex) {
+                System.err.println("Harga dan Stok harus angka!");
+            } catch (Exception ex) {
+                System.err.println("Gagal simpan: " + ex.getMessage());
             }
-
-            // Parse numeric fields
-            double priceValue = Double.parseDouble(price);
-            int stockValue = Integer.parseInt(stock);
-
-            // Buat object Product
-            Product product = new Product(code, name, priceValue, stockValue);
-
-            // Panggil service untuk insert
-            productService.insert(product);
-            return true;
-        } catch (NumberFormatException e) {
-            System.err.println("Error parsing number: " + e.getMessage());
-            return false;
-        } catch (IllegalArgumentException e) {
-            System.err.println("Validation error: " + e.getMessage());
-            return false;
-        } catch (Exception e) {
-            System.err.println("Database error: " + e.getMessage());
-            return false;
-        }
+        });
     }
 
-    /**
-     * Mengambil semua data produk
-     * Dipanggil saat aplikasi dimulai atau refresh
-     * 
-     * @return Array berisi semua produk
-     */
-    public Product[] getAllProducts() {
+    private void loadData() {
         try {
-            return productService.findAll().toArray(new Product[0]);
-        } catch (Exception e) {
-            System.err.println("Error fetching products: " + e.getMessage());
-            return new Product[0];
-        }
-    }
-
-    /**
-     * Mencari produk berdasarkan kode
-     * @param code Kode produk
-     * @return Product jika ditemukan, null jika tidak
-     */
-    public Product findByCode(String code) {
-        try {
-            return productService.findByCode(code);
-        } catch (Exception e) {
-            System.err.println("Error finding product: " + e.getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * Update data produk
-     * @param code Kode produk
-     * @param name Nama produk baru
-     * @param price Harga baru
-     * @param stock Stok baru
-     * @return true jika berhasil, false jika gagal
-     */
-    public boolean updateProduct(String code, String name, String price, String stock) {
-        try {
-            if (code == null || code.trim().isEmpty() ||
-                name == null || name.trim().isEmpty() ||
-                price == null || price.trim().isEmpty() ||
-                stock == null || stock.trim().isEmpty()) {
-                return false;
+            ObservableList<String> displayList = FXCollections.observableArrayList();
+            // Gunakan getName() dan getStock() sesuai file Product.java kamu
+            for (Product p : service.getAllProducts()) {
+                displayList.add(p.getCode() + " - " + p.getName() + " (Stok: " + p.getStock() + ")");
             }
-
-            double priceValue = Double.parseDouble(price);
-            int stockValue = Integer.parseInt(stock);
-
-            Product product = new Product(code, name, priceValue, stockValue);
-            productService.update(product);
-            return true;
+            view.listProduk.setItems(displayList);
         } catch (Exception e) {
-            System.err.println("Error updating product: " + e.getMessage());
-            return false;
+            System.err.println("Gagal load data: " + e.getMessage());
         }
     }
 
-    /**
-     * Menghapus produk
-     * @param code Kode produk yang akan dihapus
-     * @return true jika berhasil, false jika gagal
-     */
-    public boolean deleteProduct(String code) {
-        try {
-            if (code == null || code.trim().isEmpty()) {
-                return false;
-            }
-            productService.delete(code);
-            return true;
-        } catch (Exception e) {
-            System.err.println("Error deleting product: " + e.getMessage());
-            return false;
-        }
+    private void clearFields() {
+        view.txtKode.clear();
+        view.txtNama.clear();
+        view.txtHarga.clear();
+        view.txtStok.clear();
     }
 }
 
@@ -211,40 +146,68 @@ public interface ProductDAO {
 ```java
 package com.upb.agripos.dao;
 
-import com.upb.agripos.model.Product;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Implementasi ProductDAO dengan menggunakan JDBC
- * Menangani semua operasi database untuk tabel products
- */
+import com.upb.agripos.model.Product;
+
 public class ProductDAOImpl implements ProductDAO {
-    private final Connection connection;
+    private Connection connection;
 
     public ProductDAOImpl(Connection connection) {
         this.connection = connection;
     }
 
     @Override
-    public void insert(Product p) throws Exception {
-        String sql = "INSERT INTO products(code, name, price, stock) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, p.getCode());
-            ps.setString(2, p.getName());
-            ps.setDouble(3, p.getPrice());
-            ps.setInt(4, p.getStock());
-            ps.executeUpdate();
+    public void insert(Product p) {
+        String sql = "INSERT INTO products (code, name, price, stock) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, p.getCode());
+            stmt.setString(2, p.getName());
+            stmt.setDouble(3, p.getPrice());
+            stmt.setInt(4, p.getStock());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
-    public Product findByCode(String code) throws Exception {
+    public void update(Product p) {
+        String sql = "UPDATE products SET name = ?, price = ?, stock = ? WHERE code = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, p.getName());
+            stmt.setDouble(2, p.getPrice());
+            stmt.setInt(3, p.getStock());
+            stmt.setString(4, p.getCode());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void delete(String code) {
+        String sql = "DELETE FROM products WHERE code = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, code);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Product findByCode(String code) {
         String sql = "SELECT * FROM products WHERE code = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, code);
-            try (ResultSet rs = ps.executeQuery()) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, code);
+            try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return new Product(
                         rs.getString("code"),
@@ -254,16 +217,18 @@ public class ProductDAOImpl implements ProductDAO {
                     );
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return null;
     }
 
     @Override
-    public List<Product> findAll() throws Exception {
+    public List<Product> findAll() {
         List<Product> list = new ArrayList<>();
         String sql = "SELECT * FROM products";
-        try (PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 list.add(new Product(
                     rs.getString("code"),
@@ -272,49 +237,25 @@ public class ProductDAOImpl implements ProductDAO {
                     rs.getInt("stock")
                 ));
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
     }
-
-    @Override
-    public void update(Product p) throws Exception {
-        String sql = "UPDATE products SET name=?, price=?, stock=? WHERE code=?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, p.getName());
-            ps.setDouble(2, p.getPrice());
-            ps.setInt(3, p.getStock());
-            ps.setString(4, p.getCode());
-            ps.executeUpdate();
-        }
-    }
-
-    @Override
-    public void delete(String code) throws Exception {
-        String sql = "DELETE FROM products WHERE code=?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, code);
-            ps.executeUpdate();
-        }
-    }
 }
 ```
+
 ### Product.java
+
 ```java
 package com.upb.agripos.model;
 
-/**
- * Model class untuk Product (Produk)
- * Digunakan untuk merepresentasikan data produk dalam sistem Agri-POS
- */
 public class Product {
     private String code;
     private String name;
     private double price;
     private int stock;
 
-    /**
-     * Constructor dengan semua parameter
-     */
     public Product(String code, String name, double price, int stock) {
         this.code = code;
         this.name = name;
@@ -322,103 +263,116 @@ public class Product {
         this.stock = stock;
     }
 
-    // Getter methods
     public String getCode() {
         return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getName() {
         return name;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
-    public int getStock() {
-        return stock;
-    }
-
-    // Setter methods
     public void setName(String name) {
         this.name = name;
+    }
+
+    public double getPrice() {
+        return price;
     }
 
     public void setPrice(double price) {
         this.price = price;
     }
 
+    public int getStock() {
+        return stock;
+    }
+
     public void setStock(int stock) {
         this.stock = stock;
     }
-
-    @Override
-    public String toString() {
-        return String.format("%s - %s (Rp %.0f) Stok: %d", code, name, price, stock);
-    }
 }
+
 ```
+
 ### ProductService.java
 ```java
-package com.upb.agripos.model;
+package com.upb.agripos.service;
 
-/**
- * Model class untuk Product (Produk)
- * Digunakan untuk merepresentasikan data produk dalam sistem Agri-POS
- */
-public class Product {
-    private String code;
-    private String name;
-    private double price;
-    private int stock;
+import java.util.List;
 
-    /**
-     * Constructor dengan semua parameter
-     */
-    public Product(String code, String name, double price, int stock) {
-        this.code = code;
-        this.name = name;
-        this.price = price;
-        this.stock = stock;
+import com.upb.agripos.dao.ProductDAO;
+import com.upb.agripos.model.Product;
+
+public class ProductService {
+    private final ProductDAO productDAO;
+
+    public ProductService(ProductDAO productDAO) {
+        this.productDAO = productDAO;
     }
 
-    // Getter methods
-    public String getCode() {
-        return code;
+    public void addProduct(Product product) {
+        // Di sini bisa ditambahkan validasi bisnis jika perlu
+        productDAO.insert(product);
     }
 
-    public String getName() {
-        return name;
+    public List<Product> getAllProducts() {
+        return productDAO.findAll();
     }
+}
 
-    public double getPrice() {
-        return price;
-    }
+```
+### AppJavaFX.java
+```java
+package com.upb.agripos;
 
-    public int getStock() {
-        return stock;
-    }
+import com.upb.agripos.view.ProductFormView;
+import com.upb.agripos.controller.ProductController;
+import com.upb.agripos.dao.*;
+import com.upb.agripos.service.ProductService;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
-    // Setter methods
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
+public class AppJavaFX extends Application {
 
     @Override
-    public String toString() {
-        return String.format("%s - %s (Rp %.0f) Stok: %d", code, name, price, stock);
+    public void start(Stage stage) {
+        // 1. Tampilkan Jendela Dulu
+        ProductFormView view = new ProductFormView();
+        Scene scene = new Scene(view, 400, 550);
+        stage.setTitle("Agri-POS - Week 12");
+        stage.setScene(scene);
+        stage.show();
+
+        // 2. Coba Hubungkan Database (Gunakan try-catch agar jika gagal, app tidak mati)
+        try {
+            // GANTI PASSWORD SESUAI LAPTOP KAMU
+            Connection conn = DriverManager.getConnection(
+                "jdbc:postgresql://localhost:5432/agripos", "postgres", "1234"
+            );
+
+            // Inisialisasi MVC
+            ProductDAO dao = new ProductDAOImpl(conn);
+            ProductService service = new ProductService(dao);
+            new ProductController(service, view);
+
+            System.out.println("Koneksi Database Berhasil!");
+        } catch (Exception e) {
+            System.err.println("Database Error (Aplikasi tetap jalan): " + e.getMessage());
+        }
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
 ```
-
 ---
 
 ## Hasil Eksekusi
@@ -437,6 +391,16 @@ Pada praktikum ini, aplikasi berjalan menggunakan konsep event-driven programmin
 
 ---
 
+## Traceability Bab 6 (UML) -> Implementasi GUI
+
+| Artefak Bab 6 | Referensi | Handler GUI (View) | Controller & Service | Data Access Object (DAO) | Dampak pada UI & Database |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Use Case** | UC-01 Tambah Produk | Tombol `btnTambah` | `ProductController.handleAddProduct()` memanggil `service.addProduct(p)` | `ProductDAO.insert(product)` | Baris data baru tersimpan di tabel produk dan muncul di ListView |
+| **Activity Diagram** | AD-01 Alur Input Produk | `TextField` (txtKode, txtNama, dll) | Validasi data menggunakan `Double.parseDouble` & `Integer.parseInt` | `productDAO.insert()` dipicu setelah validasi sukses | Mencegah aplikasi crash jika user salah memasukkan format harga/stok |
+| **Sequence Diagram** | SD-01 Interaksi Simpan | `setOnAction(e -> ...)` pada tombol | Alur data sekuensial: View mengirim data -> Controller membungkus Model -> Service memproses | `DAO` mengeksekusi Query SQL `INSERT INTO...` menggunakan JDBC | Menjamin data berpindah dari layar (GUI) ke penyimpanan permanen (DB) secara urut |
+| **Class Diagram** | Struktur MVC & SOLID | Komponen `VBox` & `ListView` | `ProductController` menghubungkan View dengan `ProductService` | `ProductDAOImpl` mengimplementasikan interface DAO | Terciptanya pemisahan logika (Decoupling) sehingga kode mudah dikembangkan |
+
+---
 ## Kesimpulan
 
 Berdasarkan praktikum ini, dapat disimpulkan bahwa penggunaan JavaFX memungkinkan pembuatan antarmuka grafis yang interaktif dan mudah digunakan. Dengan menerapkan konsep MVC, Service, dan DAO, struktur aplikasi menjadi lebih terorganisir serta sesuai dengan prinsip desain perangkat lunak yang baik.

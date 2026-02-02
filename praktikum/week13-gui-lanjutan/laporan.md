@@ -1,123 +1,47 @@
-# Laporan Praktikum Minggu 13 - GUI Lanjutan (Advanced GUI with JTable)
+# Laporan Praktikum Minggu 13 - GUI Lanjutan ((TableView dan Lambda Expression))
 
 Topik: Implementasi GUI Lanjutan dengan JTable, Menu Bar, dan Dialog Boxes
 
 ## Identitas
-- Nama  : [Nama Mahasiswa]
-- NIM   : [NIM Mahasiswa]
-- Kelas : [Kelas]
-- Dosen : [Nama Dosen]
+- Nama  : [Nunik Aulia Primadani]
+- NIM   : [240202875]
+- Kelas : [3IKRB]
 
 ---
 
 ## Tujuan
 
-Mahasiswa memahami dan dapat mengimplementasikan antarmuka grafis tingkat lanjut menggunakan Java Swing dengan:
-1. **JTable** untuk menampilkan data dalam format tabel yang terstruktur
-2. **JMenuBar** dan **JMenu** untuk navigasi aplikasi
-3. **JDialog** untuk interaksi dialog (Add, Edit, Delete)
-4. **Event Handling** dengan lambda expressions
-5. Integrasi antara berbagai komponen Swing untuk aplikasi desktop yang profesional
+1. Menampilkan data menggunakan TableView JavaFX.
+2. Mengintegrasikan koleksi objek dengan GUI.
+3. Menggunakan lambda expression untuk event handling.
+4. Menghubungkan GUI dengan DAO secara penuh.
+5. Membangun antarmuka GUI Agri-POS yang lebih interaktif.
 
 ---
 
 ## Dasar Teori
 
-### 1. **JTable (Table Component)**
-   - JTable adalah komponen Swing untuk menampilkan data dalam format baris dan kolom
-   - Menggunakan `DefaultTableModel` untuk mengelola data tabel
-   - Mendukung multi-selection modes dan custom rendering
-   - Model-View architecture memisahkan data dari tampilan
-
-### 2. **Menu Bar dan Menu**
-   - **JMenuBar**: Container untuk menu yang ditampilkan di bagian atas jendela
-   - **JMenu**: Submenu yang berisi item-item menu
-   - **JMenuItem**: Item individual dalam menu yang dapat dipicu dengan action listener
-   - Struktur hierarki: JFrame → JMenuBar → JMenu → JMenuItem
-
-### 3. **Dialog Boxes (JDialog)**
-   - JDialog digunakan untuk membuat window dialog modal dan non-modal
-   - Modal dialog: menghentikan akses ke window parent sampai dialog ditutup
-   - Berguna untuk input data, konfirmasi, dan pesan error/warning
-   - Dapat di-customize dengan berbagai komponen
-
-### 4. **Event Handling dengan Lambda Expression**
-   - Lambda expression menyederhanakan anonymous inner class untuk listener
-   - Syntax: `(parameters) -> {body}`
-   - Membuat kode lebih ringkas dan readable
-   - Digunakan untuk ActionListener, ChangeListener, dll
-
-### 5. **Data Management dalam JTable**
-   - **DefaultTableModel**: Model default untuk JTable dengan ArrayList sebagai backing store
-   - **setRowCount(0)**: Menghapus semua baris dari tabel
-   - **addRow(Object[])**: Menambah baris baru ke tabel
-   - **getSelectedRow()**: Mendapatkan index baris yang dipilih
+1. TableView JavaFX digunakan untuk menampilkan data dalam bentuk tabel yang terstruktur dan dinamis.
+2. Lambda Expression menyederhanakan penulisan event handler pada JavaFX.
+3. DAO (Data Access Object) memisahkan logika akses data dari logika aplikasi.
+4. Service Layer menjadi penghubung antara controller dan DAO.
+5. Prinsip SOLID (DIP) memastikan View tidak berinteraksi langsung dengan database.
 
 ---
 
 ## Langkah Praktikum
 
-### Langkah 1: Setup Struktur Project
-```
-week13-gui-lanjutan/
-├── src/main/java/com/upb/agripos/
-│   ├── Product.java (Model class)
-│   └── ProductTableFrame.java (GUI dengan JTable)
-├── laporan.md
-└── screenshots/
-    ├── 01-table-view.png
-    ├── 02-add-dialog.png
-    ├── 03-edit-dialog.png
-    └── 04-menu-bar.png
-```
+1. Persiapan Project Menyusun dan mengonfigurasi file pom.xml untuk kebutuhan JavaFX dan koneksi database PostgreSQL.
 
-### Langkah 2: Membuat Class Model (Product.java)
-- Copy dari week 12 atau buat class Product baru
-- Atribut: id (String), name (String), price (int), stock (int)
-- Constructor dan getter/setter lengkap
-- Method toString() untuk debug
+2. Pengembangan Backend Mengimplementasikan kelas ProductDAO, ProductDAOImpl, dan ProductService sebagai pengelola akses data.
 
-### Langkah 3: Membuat GUI dengan JTable (ProductTableFrame.java)
-- Extends JFrame
-- Inisialisasi ArrayList<Product> dengan sample data
-- Buat JTable dengan DefaultTableModel
-- Implementasi menu bar (File, Edit, Help)
-- Implementasi toolbar dengan search field
-- Implementasi button panel (Add, Edit, Delete, Refresh)
-- Implementasi dialog untuk Add dan Edit product
-- Implementasi metode search products
+3. Pembuatan Antarmuka (View) Merancang ProductTableView yang berisi tabel daftar produk serta tombol aksi.
 
-### Langkah 4: Implementasi Event Handling
-- **loadTableData()**: Load data dari ArrayList ke JTable
-- **showAddDialog()**: Display dialog untuk add product baru
-- **showEditDialog()**: Display dialog untuk edit product terpilih
-- **deleteProduct()**: Delete product dengan konfirmasi
-- **searchProducts()**: Filter products berdasarkan keyword
+4. Implementasi Controller Mengembangkan ProductController sebagai penghubung antara View dan Service, serta menangani aksi pengguna menggunakan lambda expression.
 
-### Langkah 5: Testing
-- Compile: `javac -d . com/upb/agripos/Product.java com/upb/agripos/ProductTableFrame.java`
-- Run: `java com.upb.agripos.ProductTableFrame`
-- Test add product
-- Test edit product
-- Test delete product dengan konfirmasi
-- Test search functionality
-- Test menu items (File → Exit, Edit → Add/Delete, Help → About)
+5. Integrasi Aplikasi Menggabungkan seluruh komponen aplikasi melalui kelas AppJavaFX.
 
-### File yang Dibuat
-1. `Product.java` - Model class
-2. `ProductTableFrame.java` - Main GUI dengan JTable dan menu bar
-
-### Commit Message
-```
-feat: add week 13 advanced GUI with JTable and dialogs
-- Create ProductTableFrame with JTable for product list
-- Implement JMenuBar with File, Edit, Help menus
-- Add Add/Edit/Delete product dialogs with validation
-- Implement search functionality and table refresh
-- Use lambda expressions for event handling
-```
-
----
+6. Melakukan commit dengan pesan
 
 ## Kode Program
 
@@ -261,67 +185,3 @@ Praktikum Week 13 telah berhasil mendemonstrasikan pembuatan aplikasi GUI tingka
 Aplikasi AgriPOS - Product Management menunjukkan evolusi dari GUI dasar menjadi aplikasi desktop yang lebih profesional dan user-friendly.
 
 ---
-
-## Quiz
-
-### 1. Jelaskan perbedaan antara JTable dan JTextArea!
-**Jawaban:**
-- **JTextArea**: Menampilkan teks dalam format plain text
-- **JTable**: Menampilkan data dalam struktur baris-kolom terstruktur
-- JTable lebih mudah untuk searching, sorting, dan manipulasi data individual
-
-### 2. Apa kegunaan DefaultTableModel dalam JTable?
-**Jawaban:**
-DefaultTableModel adalah model yang mengelola data tabel. Menyimpan data dalam struktur 2D (rows × columns), menyediakan method untuk add/remove rows, dan memisahkan data dari tampilan (Model-View pattern).
-
-### 3. Bagaimana cara membuat dialog modal di Java Swing?
-**Jawaban:**
-```java
-JDialog dialog = new JDialog(parentFrame, "Title", true); // true = modal
-dialog.setSize(400, 300);
-dialog.setLocationRelativeTo(parentFrame);
-dialog.setVisible(true); // Blocking call
-```
-
-### 4. Bagaimana cara mendapatkan baris yang dipilih di JTable?
-**Jawaban:**
-```java
-int selectedRow = productTable.getSelectedRow();
-if (selectedRow < 0) {
-    JOptionPane.showMessageDialog(frame, "Please select a row!");
-    return;
-}
-Product selected = productList.get(selectedRow);
-```
-
-### 5. Jelaskan konsep lambda expression dalam event handling!
-**Jawaban:**
-Lambda expression menyederhanakan anonymous inner class. Syntax: `(parameters) -> {body}`. Membuat kode lebih singkat dan readable untuk listener seperti ActionListener.
-
-### 6. Bagaimana cara melakukan refresh data di JTable?
-**Jawaban:**
-```java
-tableModel.setRowCount(0); // Clear all rows
-for (Product product : productList) {
-    tableModel.addRow(new Object[]{...});
-}
-```
-Panggil method ini setelah setiap operasi (add, edit, delete).
-
-### 7. Bagaimana cara membuat search/filter functionality?
-**Jawaban:**
-Iterate ArrayList dengan keyword filter dan tampilkan hanya product yang cocok di table menggunakan case-insensitive comparison dengan toLowerCase().
-
-### 8. Apa perbedaan dialog.setVisible(true) dan dialog.setVisible(false)?
-**Jawaban:**
-- setVisible(true): Menampilkan dialog, blocking call jika modal
-- setVisible(false): Menyembunyikan dialog tanpa menutupnya
-- Untuk menutup: gunakan dialog.dispose() untuk lepas resources
-
----
-
-## Referensi
-- Oracle Java Swing Tutorial: https://docs.oracle.com/javase/tutorial/uiswing/
-- JTable Documentation: https://docs.oracle.com/javase/tutorial/uiswing/components/table.html
-- Lambda Expression: https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html
-- Event Handling: https://www.geeksforgeeks.org/java-swing-event-handling/

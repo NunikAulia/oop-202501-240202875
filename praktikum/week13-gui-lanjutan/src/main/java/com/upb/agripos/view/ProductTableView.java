@@ -306,3 +306,4 @@ public class ProductTableView extends VBox {
         loadData();
     }
 }
+
